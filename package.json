@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "framer-motion": "^10.16.4",
+    "jwt-decode": "^4.0.0"
+  }
+}
