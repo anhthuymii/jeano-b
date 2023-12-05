@@ -65,25 +65,6 @@ const Search = () => {
     }
   }
 
-  // async function searchProducts(query) {
-  //   if (query) {
-  //     try {
-  //       const { data } = await axios.get(
-  //         `${process.env.REACT_APP_API}/api/v1/search/${query}`
-  //       );
-  //       if (query === searchQuery) {
-  //         setSearchResults(data.result.hits.hits);
-  //         setShowResults(true);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //       toast.error("Something went wrong");
-  //     }
-  //   } else {
-  //     setShowResults(false);
-  //   }
-  // }
-
   const search = async () => {
     if (searchQuery) {
       try {

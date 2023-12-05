@@ -22,6 +22,7 @@ const Checkout = () => {
   const [auth] = useAuth();
   const [id, setId] = useState("");
   const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
@@ -107,6 +108,7 @@ const Checkout = () => {
         quantity: item.quantity,
         size: item.size,
         name: item.name,
+        slug: item.slug,
         photo: `${process.env.REACT_APP_API}/api/v1/product/product-photo/${item._id}`,
       }));
 
@@ -159,7 +161,7 @@ const Checkout = () => {
         quantity: item.quantity,
         size: item.size,
         name: item.name,
-        // photo: item.photo,
+        slug: item.slug,
         photo: `${process.env.REACT_APP_API}/api/v1/product/product-photo/${item._id}`,
       }));
 
@@ -226,41 +228,43 @@ const Checkout = () => {
 
   const getUser = async () => {
     try {
-      if (auth.user && auth.user.id) {
-        const userId = auth.user.id;
-        const response = await axios.get(
-          `${process.env.REACT_APP_API}/api/v1/auth/user/${userId}`
-        );
-        const userData = response.data.user;
-        if (userData.address) {
-          const { city, commune, detail, district } = userData.address;
+      // if (auth.user && auth.user.id) {
+      const userId = auth?.user?.id;
+      const response = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/auth/user/${userId}`
+      );
+      const userData = response.data.user;
+      if (userData.address) {
+        const { city, commune, detail, district } = userData.address;
 
-          setAddressDetails({
-            city,
-            commune,
-            detail,
-            district,
-          });
-          console.log(userData.address);
-        }
-        setUser(userData);
-        setId(userData.id);
-        setName(userData.name);
-        setPhone(userData.phone);
-        setEmail(userData.email);
-        setCommunes(userData.address.communes);
-        setCity(userData.address.city);
-        setDetail(userData.address.detail);
-        setDistricts(userData.address.districts);
+        setAddressDetails({
+          city,
+          commune,
+          detail,
+          district,
+        });
+        console.log(userData.address);
       }
+      setUser(userData);
+      setId(userData.id);
+      setName(userData.name);
+      setPhone(userData.phone);
+      setEmail(userData.email);
+      setCommunes(userData.address.communes);
+      setCity(userData.address.city);
+      setDetail(userData.address.detail);
+      setDistricts(userData.address.districts);
+      // }
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   };
 
   useEffect(() => {
-    getUser();
-  }, [auth.user.id]);
+    if (auth.user?.id) {
+      getUser();
+    }
+  }, [auth.user?.id]);
 
   return (
     <div className="max-w-container mx-auto px-4">

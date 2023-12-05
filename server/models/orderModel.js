@@ -8,11 +8,37 @@ const orderSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
         },
+        name: { type: String, required: true },
+        slug: {
+          type: String,
+          required: true,
+        },
         size: { type: String, required: true },
         quantity: { type: String, required: true },
         price: { type: Number, required: true },
         photo: { data: Buffer, contentType: String },
-        name: { type: String, required: true },
+        reviews: [
+          {
+            id: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "Review",
+            },
+            comment: {
+              type: String,
+              required: true,
+            },
+            star: {
+              type: Number,
+              required: true,
+            },
+            reviewPhoto: [
+              {
+                data: Buffer,
+                contentType: String,
+              },
+            ],
+          },
+        ],
       },
     ],
     paymentIntent: {},
@@ -28,7 +54,11 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    phone: { type: Number, required: true },
+    notifications: {
+      type: Array,
+      default: [],
+    },
+    phone: { type: String, required: true },
     name: { type: String, required: true },
     address: {
       city: {
@@ -50,13 +80,6 @@ const orderSchema = new mongoose.Schema(
     totalPrice: { type: Number, required: true },
     itemsPrice: { type: Number, required: true },
     shippingPrice: { type: Number, required: true },
-    notifications: [
-      {
-        type: { type: String, required: true },
-        message: { type: String, required: true },
-        data: { type: Object },
-      },
-    ],
   },
   {
     timestamps: true,
@@ -66,6 +89,7 @@ const orderSchema = new mongoose.Schema(
     toObject: {
       virtuals: true,
     },
+    strictPopulate: false, 
   }
 );
 

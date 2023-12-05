@@ -30,6 +30,8 @@ const Products = () => {
   const [sellingProductsCount, setSellingProductsCount] = useState(0);
   const [outOfStockProductsCount, setOutOfStockProductsCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [activeFilter, setActiveFilter] = useState(null);
+
   const [pagination, setPagination] = useState({
     first: 0,
     rows: ROWS_PER_PAGE,
@@ -37,6 +39,10 @@ const Products = () => {
     pageCount: 0,
     totalRecords: 0,
   });
+  const handleFilterSelect = (filter) => {
+    setPage(1); // Reset page when filter changes
+    setActiveFilter(filter);
+  };
   const handleDeleteConfirmation = (product) => {
     setProductToDelete(product);
     setShowDeleteConfirmation(true);
@@ -53,6 +59,11 @@ const Products = () => {
 
       if (search) {
         apiUrl += `&search=${search.toLowerCase()}`;
+      }
+      if (activeFilter === "active") {
+        apiUrl += "&active=true";
+      } else if (activeFilter === "outOfStock") {
+        apiUrl += "&outOfStock=true";
       }
       const { data } = await axios.get(apiUrl);
       const totalProducts = data.total;
@@ -95,14 +106,6 @@ const Products = () => {
     navigate(`/dashboard/admin/product/${productSlug}`);
   };
 
-  const getSellingProducts = () => {
-    return products.filter((p) => p.quantity > 0 && p.tag !== "SOLD OUT");
-  };
-
-  const getOutOfStockProducts = () => {
-    return products.filter((p) => p.quantity === 0 || p.tag === "SOLD OUT");
-  };
-
   //delete a product
   const handleDelete = async (pId) => {
     try {
@@ -133,7 +136,7 @@ const Products = () => {
         </div>
         <div className="relative w-full rounded xl:w-12/12 px-1">
           <div className="block bg-transparent mx-4 overflow-x-auto">
-            <QuantityProduct />
+            <QuantityProduct onSelectFilter={handleFilterSelect} />
             <div className="flex flex-row pt-2 relative mx-auto text-gray-600">
               <div className="relative">
                 <input

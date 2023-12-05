@@ -146,13 +146,13 @@ const OrderSteps = ({ onChangeOrderStatus }) => {
       >
         Đã hủy đơn ({cancel.length})
       </NavLink>
-      |
+      {/*|
       <button
         className="p-2 m-2"
         // onClick={() => handleDelivery()}
       >
         Đã trả hàng
-      </button>
+  </button>*/}
     </div>
   );
 };

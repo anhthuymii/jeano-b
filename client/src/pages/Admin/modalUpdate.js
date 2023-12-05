@@ -1,6 +1,6 @@
 import { Menu } from "@headlessui/react";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineClose, AiOutlineDown } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
@@ -68,6 +68,13 @@ const ModalUpdate = ({ order, onCancel }) => {
   const handleChange = async (orderId, value) => {
     try {
       console.log("Handling change. Order ID:", orderId, "Value:", value);
+      if (
+        value === "Đã giao hàng" &&
+        new Date(receivedDate) < new Date(sendDate)
+      ) {
+        toast.error("Ngày nhận hàng không thể nhỏ hơn ngày gửi hàng.");
+        return;
+      }
       if (value === "Đã giao hàng") {
         const productsToUpdate = order.products.map((product) => ({
           productId: product.product,
@@ -90,8 +97,25 @@ const ModalUpdate = ({ order, onCancel }) => {
         toast.success(
           "Cập nhật trạng thái đơn hàng và số lượng sản phẩm thành công"
         );
-        onCancel(); // Close the modal after success
-      } else {
+        // window.location.reload();
+        onCancel();
+      }
+      if (order.orderStatus === "Đã giao hàng") {
+        toast.error("Không thể chỉnh sửa khi đơn hàng đã giao hàng thành công");
+        return;
+      }
+      if (order.orderStatus === "Đã hủy đơn") {
+        toast.error("Không thể chỉnh sửa khi đơn hàng đã bị hủy");
+        return;
+      }
+      if (
+        changeStatus !== "Đã hủy đơn" &&
+        new Date(receivedDate) < new Date(sendDate)
+      ) {
+        toast.error("Ngày nhận hàng không thể nhỏ hơn ngày gửi hàng.");
+        return;
+      }
+      else {
         const { data } = await axios.put(
           `${process.env.REACT_APP_API}/api/v1/order/update-order/${orderId}`,
           {
@@ -104,21 +128,33 @@ const ModalUpdate = ({ order, onCancel }) => {
 
         if (data.success) {
           toast.success("Cập nhật trạng thái đơn hàng thành công");
-          onCancel(); // Close the modal after success
+          window.location.reload();
+          onCancel();
         } else {
           toast.error(data.message);
         }
       }
     } catch (error) {
-      console.error("Error handling change:", error);
-      toast.error("Error handling change");
+      console.error("Lỗi xử lý thay đổi:", error);
+      toast.error("Lỗi xử lý thay đổi");
     }
   };
+
+  useEffect(() => {
+    setChangeStatus(order.orderStatus);
+    setSendDate(order.sendDate);
+    setReceivedDate(order.receivedDate);
+    setCancellationReason("");
+  }, [order]);
 
   const cancelOrder = async (orderId, cancelReason) => {
     try {
       if (!cancelReason) {
-        setErrorMessage("Vui lòng nhập lý do hủy đơn hàng.");
+        toast.error("Vui lòng nhập lý do hủy đơn hàng.");
+        return;
+      }
+      if (order.orderStatus === "Đã giao hàng") {
+        toast.error("Không thể chỉnh sửa khi đơn hàng đã giao hàng thành công");
         return;
       }
       const { data } = await axios.put(

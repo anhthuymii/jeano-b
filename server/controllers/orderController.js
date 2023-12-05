@@ -1,5 +1,6 @@
 import orderModel from "../models/orderModel.js";
 import { validationResult } from "express-validator";
+import userModel from "../models/userModel.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -9,6 +10,11 @@ export const createOrder = async (req, res) => {
       orderby,
       phone,
       name,
+      slug,
+      reviews,
+      star,
+      comment,
+      reviewPhoto,
       address,
       totalPrice,
       itemsPrice,
@@ -21,6 +27,7 @@ export const createOrder = async (req, res) => {
       !orderby ||
       !phone ||
       !name ||
+      // !slug ||
       !address ||
       !totalPrice ||
       !itemsPrice ||
@@ -104,6 +111,7 @@ export const getAllOrders = async (req, res) => {
 
     const orders = await orderModel
       .find(filter)
+      // .populate("products.product.reviews")
       .limit(parseInt(limit))
       .skip(skip)
       .sort({ createdAt: -1 });
@@ -255,15 +263,18 @@ export const updateOrderStatus = async (req, res) => {
         message: "Invalid date format",
       });
     }
-    const order = await orderModel.findByIdAndUpdate(
-      orderId,
-      {
-        orderStatus,
-        sendDate: formattedSendDate,
-        receivedDate: formattedReceivedDate,
-      },
-      { new: true }
-    );
+
+    const order = await orderModel
+      .findByIdAndUpdate(
+        orderId,
+        {
+          orderStatus,
+          sendDate: formattedSendDate,
+          receivedDate: formattedReceivedDate,
+        },
+        { new: true }
+      )
+      .populate("orderby");
 
     if (!order) {
       return res.status(404).json({
@@ -271,6 +282,12 @@ export const updateOrderStatus = async (req, res) => {
         message: "Order not found",
       });
     }
+
+    // Add a notification to the user
+    const notificationMessage = `Order #${order._id} status updated to ${orderStatus}`;
+    await userModel.findByIdAndUpdate(order.orderby._id, {
+      $push: { notifications: notificationMessage },
+    });
 
     res.status(200).json({
       success: true,
@@ -329,6 +346,44 @@ export const cancelOrder = async (req, res) => {
       success: false,
       message: "Lỗi khi hủy đơn hàng",
       error: error.message,
+    });
+  }
+};
+
+export const getDeliveredProductsForUser = async (req, res) => {
+  try {
+    const userId = req.params.userId.trim();
+    const deliveredOrders = await orderModel
+      .find({
+        orderby: userId,
+        orderStatus: "Đã giao hàng",
+      })
+      .select("_id");
+    console.log("Delivered Orders:", deliveredOrders);
+    const deliveredOrderIds = deliveredOrders.map((order) => order._id);
+    console.log("Delivered Order IDs:", deliveredOrderIds);
+    const productsInDeliveredOrders = await orderModel
+      .find({
+        _id: { $in: deliveredOrderIds },
+      })
+      .populate({
+        path: "products.product",
+        select: "name price reviews",
+      });
+
+    console.log("Products In Delivered Orders:", productsInDeliveredOrders);
+
+    res.status(200).json({
+      success: true,
+      message: "Products in user's delivered orders retrieved successfully",
+      products: productsInDeliveredOrders,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      message: "Error retrieving products in user's delivered orders",
     });
   }
 };

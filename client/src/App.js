@@ -61,6 +61,8 @@ import BestSellersProduct from "./components/home/Category/BestSellersProduct";
 import HotProduct from "./components/home/Category/HotProduct";
 import NewProduct from "./components/home/Category/NewProduct";
 import { Helmet } from "react-helmet";
+import UserReview from "./pages/User/UserReview/UserReview";
+import GetReviews from "./pages/Admin/Review/GetReviews";
 
 const Layout = ({ title, description, keywords, author, children }) => {
   const { showLoading, hideLoading } = useLoading();
@@ -100,6 +102,7 @@ const router = createBrowserRouter(
         <Route path="/search/:keyword" element={<SearchProduct />} />
         <Route path="/dashboard" element={<PrivateRoute />}>
           <Route path="user/profile" element={<UserDashboard />} />
+          <Route path="user/reviews" element={<UserReview />} />
           <Route path="user/orders" element={<UserOrder />} />
           <Route path="user/orders/unconfirm" element={<OrderUnconfirm />} />
           <Route path="user/orders/confirm" element={<OrderConfirm />} />
@@ -117,6 +120,7 @@ const router = createBrowserRouter(
           <Route path="admin/create-product" element={<CreateProduct />} />
           <Route path="admin/product/:slug" element={<UpdateProduct />} />
           <Route path="admin/users" element={<GetUser />} />
+          <Route path="admin/reviews" element={<GetReviews />} />
           <Route path="admin/orders" element={<GetOrder />} />
           <Route path="admin/update-admin" element={<UpdateAdmin />} />
           <Route path="admin/orders/unconfirm" element={<ListUnconfirm />} />

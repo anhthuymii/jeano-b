@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -8,8 +8,9 @@ import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import OrderSteps from "./orderStatus/OrderSteps";
 import dayjs from "dayjs";
 import numeral from "numeral";
-import TimeLine from "../../components/designLayouts/TimeLine";
 import Title from "../../components/designLayouts/Title";
+import { MdOutlineRateReview, MdOutlineReviews } from "react-icons/md";
+import ReviewModal from "./ReviewModal";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -17,6 +18,11 @@ const OrderDetails = () => {
   const navigate = useNavigate();
   const [prevLocation, setPrevLocation] = useState("");
   const [timelineData, setTimelineData] = useState([]);
+  const [review, setReview] = useState(null);
+  const [showReview, setShowReview] = useState(false);
+  const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
+  const [reviewedProductIds, setReviewedProductIds] = useState([]);
+  const [productReviews, setProductReviews] = useState({});
 
   const getOrderDetails = async () => {
     try {
@@ -40,6 +46,42 @@ const OrderDetails = () => {
   const handleOrderStatusChange = (status) => {
     setSelectedStatus(status);
   };
+  const handleReview = (product) => {
+    const productId = product.id;
+
+    if (!reviewedProductIds.includes(productId)) {
+      setReview(product);
+      setShowReview(true);
+    } else {
+      toast.info("Sản phẩm đã được đánh giá trước đó.");
+    }
+    console.log("Product to review:", product);
+  };
+
+  const handleReviewSubmit = () => {
+    const productId = review.id;
+
+    if (!reviewedProductIds.includes(productId)) {
+      setReviewedProductIds((prevIds) => [...prevIds, productId]);
+      setIsReviewSubmitted(true);
+      setProductReviews({
+        ...productReviews,
+        [productId]: true,
+      });
+      localStorage.setItem(
+        "reviewedProductIds",
+        JSON.stringify(reviewedProductIds)
+      );
+      setShowReview(false);
+    } else {
+      toast.info("Sản phẩm đã được đánh giá trước đó.");
+    }
+  };
+  useEffect(() => {
+    const storedReviewedProductIds =
+      JSON.parse(localStorage.getItem("reviewedProductIds")) || [];
+    setReviewedProductIds(storedReviewedProductIds);
+  }, []);
 
   return (
     <div className="w-full min-h-screen flex flex-row">
@@ -48,7 +90,6 @@ const OrderDetails = () => {
       <div className="flex flex-col space-y-6 py-1 px-2">
         <Breadcrumbs title="Chi tiết đơn hàng" prevLocation={prevLocation} />
         <OrderSteps onChangeOrderStatus={handleOrderStatusChange} />
-        {/*<TimeLine timelineData={timelineData} />*/}
         {orders && (
           <div className="px-4">
             <div className="bg-gray-50 p-4">
@@ -91,7 +132,11 @@ const OrderDetails = () => {
                     </p>
                     <p className="text-base leading-4 text-left text-gray-800">
                       Ngày đặt hàng:{" "}
-                      {dayjs(orders.createdAt).format("DD/MM/YYYY HH:mm:ss")}
+                      {dayjs(orders.createdAt).format("DD/MM/YYYY HH:mm")}
+                    </p>
+                    <p className="text-base leading-4 text-left text-gray-800">
+                      Ngày cập nhật:{" "}
+                      {dayjs(orders.updatedAt).format("DD/MM/YYYY HH:mm")}
                     </p>
                     <p className="text-base leading-4 text-left text-gray-800">
                       Thanh toán: {orders.paymentIntent}
@@ -155,6 +200,48 @@ const OrderDetails = () => {
                           </p>
                         </div>
                       </div>
+                      {orders.orderStatus === "Đã giao hàng" && (
+                        <div>
+                          <p
+                            onClick={() => handleReview(product)}
+                            className="flex my-4 underline flex-row text-base leading-4 text-left text-gray-800 cursor-pointer"
+                          >
+                            {reviewedProductIds.includes(product.id) ? (
+                              <div>
+                                <MdOutlineReviews
+                                  className="mx-2 mb-3"
+                                  size={25}
+                                />
+                                <Link
+                                  to="/dashboard/user/reviews"
+                                  className="text-base leading-4 text-left"
+                                >
+                                  Đã đánh giá sản phẩm
+                                </Link>
+                              </div>
+                            ) : (
+                              <div>
+                                <MdOutlineRateReview
+                                  className="mx-2 mb-3"
+                                  size={25}
+                                />
+                                <p className="text-base leading-4 text-left">
+                                  Đánh giá sản phẩm
+                                </p>
+                              </div>
+                            )}
+                          </p>
+
+                          {/*reviewedProductIds.includes(product.id) && (
+                            <p
+                              onClick={() => handleReview(product)}
+                              className="text-base leading-4 text-left text-green-600 cursor-pointer"
+                            >
+                              Xem đánh giá sản phẩm
+                            </p>
+                          )*/}
+                        </div>
+                      )}
                     </div>
                   ))}
               </div>
@@ -176,7 +263,7 @@ const OrderDetails = () => {
                   </div>
                   <div className="flex justify-between items-center w-full">
                     <p className="text-base leading-4 text-gray-800">
-                      Phí ship:
+                      Phí vận chuyển:
                     </p>
                     <p className="text-base leading-4 text-gray-600">
                       {numeral(orders.shippingPrice).format("0,0")} VND
@@ -195,6 +282,15 @@ const OrderDetails = () => {
               </div>
             </div>
           </div>
+        )}
+        {showReview && (
+          <ReviewModal
+            orderId={orders.id}
+            product={review}
+            onCancel={() => setShowReview(false)}
+            onReviewSubmit={handleReviewSubmit}
+            isReviewed={reviewedProductIds.includes(review.id)}
+          />
         )}
       </div>
     </div>

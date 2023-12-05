@@ -1,14 +1,8 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import { useAuth } from "../../context/auth";
 import { RiShoppingCartFill } from "react-icons/ri";
-import { BsFillTicketDetailedFill } from "react-icons/bs";
-import {
-  BiCreditCardAlt,
-  BiGridAlt,
-  BiHomeAlt,
-  BiSolidCategory,
-  BiSolidUserAccount,
-} from "react-icons/bi";
+import { BiHomeAlt } from "react-icons/bi";
+import { MdOutlineReviews } from "react-icons/md";
 import { AiFillCaretRight, AiFillCaretLeft } from "react-icons/ai";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -30,6 +24,11 @@ export default function SidebarUser({ children }) {
       name: "Đơn hàng",
       icon: <RiShoppingCartFill />,
       path: "/dashboard/user/orders",
+    },
+    {
+      name: "Đánh giá sản phẩm",
+      icon: <MdOutlineReviews />,
+      path: "/dashboard/user/reviews",
     },
   ];
 
@@ -73,7 +72,7 @@ export default function SidebarUser({ children }) {
       >
         {isExpanded ? <AiFillCaretRight /> : <AiFillCaretLeft />}{" "}
       </div>
-      <div className="ml-14 text-xl font-bold flex space-x-3 items-center">
+      <div className="ml-14 uppercase text-xl font-bold flex space-x-3 items-center">
         <div className={isExpanded ? "block" : "hidden"}>Hi, {user.name}</div>
       </div>
       <div className="mt-10 flex flex-col space-y-8">

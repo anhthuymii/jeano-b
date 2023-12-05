@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import ProductInfo from "../../components/pageProps/productDetails/ProductInfo";
-import ProductsOnSale from "../../components/pageProps/productDetails/ProductsOnSale";
 import axios from "axios";
 import numeral from "numeral";
 import Title from "../../components/designLayouts/Title";
+import ReviewProduct from "../Review/ReviewProduct";
 const ProductDetails = () => {
   const navigate = useNavigate();
   const [prevLocation, setPrevLocation] = useState("");
-
+  const [reviews, setReviews] = useState([]);
   const [product, setProduct] = useState({});
   const [productInfo, setProductInfo] = useState({});
   const params = useParams();
@@ -26,7 +26,10 @@ const ProductDetails = () => {
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/product/get-product/${params.slug}`
       );
+      console.log("Product Data:", data);
+
       setProduct(data?.product);
+      getReviews(data?.product._id);
       getSimilarProduct(data?.product._id, data?.product.category?._id);
     } catch (error) {
       console.log(error);
@@ -41,6 +44,25 @@ const ProductDetails = () => {
       setRelatedProducts(data?.products);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getReviews = async (productId) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/review/get-product-reviews/${productId}`
+      );
+      console.log("Product Data:", response);
+
+      const { success, reviews, message } = response.data;
+
+      if (success) {
+        setReviews(reviews);
+      } else {
+        console.error(message);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -65,11 +87,13 @@ const ProductDetails = () => {
                   <div
                     key={p._id}
                     className="flex items-center gap-4 border-b-[1px] border-b-gray-300 py-2"
-                    onClick={() => navigate(`/product/${p.slug}`)}
+                    onClick={() =>
+                      navigate(`/product/${p.slug}`, { state: { product: p } })
+                    }
                   >
                     <div>
                       <img
-                        className="w-24"
+                        className="w-24 h-24"
                         src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p._id}`}
                         alt={p.name}
                       />
@@ -95,6 +119,9 @@ const ProductDetails = () => {
           <div className="h-full w-full md:col-span-2 xl:col-span-3 xl:p-14 flex flex-col gap-6 justify-center">
             <ProductInfo productInfo={productInfo} />
           </div>
+        </div>
+        <div>
+          <ReviewProduct reviews={reviews} />
         </div>
       </div>
     </div>

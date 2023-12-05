@@ -125,7 +125,7 @@ const UserOrder = () => {
                     </div>
                     <div>
                       <p className="text-base font-semibold">
-                        {dayjs(order.createdAt).format("DD/MM/YYYY HH:mm")}
+                        {dayjs(order.updatedAt).format("DD/MM/YYYY HH:mm")}
                       </p>
                     </div>
                     <div className="flex-col justify-start mt-2">

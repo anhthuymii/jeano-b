@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/orebiSlice";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import getSimilarProduct from "./ProductsOnSale";
 import numeral from "numeral";
 import h2p from "html2plaintext";
 import htmlFormat from "html-to-formatted-text";
@@ -30,7 +29,6 @@ const ProductInfo = ({ productInfo }) => {
         `${process.env.REACT_APP_API}/api/v1/product/get-product/${params.slug}`
       );
       setProduct(data?.product);
-      getSimilarProduct(data?.product._id, data?.product.category?._id);
     } catch (error) {
       console.log(error);
     }
@@ -50,17 +48,14 @@ const ProductInfo = ({ productInfo }) => {
           size: sizeState,
         })
       );
-      // Reset the size and warning message
       setSizeState("");
       setWarningMessage("");
     } else {
-      // Display a warning message
       setWarningMessage(
         "Vui lòng chọn kích thước trước khi thêm vào giỏ hàng."
       );
     }
   };
-  console.log(sizeState);
 
   const sizesArray = product.size ? product.size.split(",") : [];
 

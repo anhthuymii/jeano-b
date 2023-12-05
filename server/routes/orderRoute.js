@@ -7,7 +7,7 @@ import {
   deleteOrder,
   getAllOrders,
   getAllUserOrder,
-  // getUserOrdersByStatus,
+  getDeliveredProductsForUser,
   singleUserOrder,
   updateOrderStatus,
 } from "../controllers/orderController.js";
@@ -34,5 +34,7 @@ router.put("/update-order/:id", requireSignIn, isAdmin, updateOrderStatus);
 // router.put("/pay", requireSignIn, updateOrderUser)
 
 // router.get("/newOrderForCurrentUser", requireSignIn, getNewOrderForCurrentUser)
+
+router.get("/get-delivered-products/:userId", getDeliveredProductsForUser);
 
 export default router;

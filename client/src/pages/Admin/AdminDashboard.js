@@ -14,7 +14,6 @@ import Chart from "../../components/designLayouts/Chart/Chart";
 import ProductChart from "../../components/designLayouts/Chart/ProductChart";
 import { useNavigate } from "react-router-dom";
 import MoneyChart from "../../components/designLayouts/Chart/MoneyChart";
-import TodayCount from "../../components/designLayouts/Chart/TodayCount";
 import Title from "../../components/designLayouts/Title";
 const AdminDashboard = ({ onTotalOrders }) => {
   const [auth] = useAuth();
@@ -136,8 +135,11 @@ const AdminDashboard = ({ onTotalOrders }) => {
   };
 
   useEffect(() => {
-    getUser();
-  }, [auth.user.id]);
+    if (auth.user?.id) {
+      getUser();
+    }
+  }, [auth.user?.id]);
+
   return (
     <div className="w-full min-h-screen flex flex-row">
       <Title title={"Thống kê - JEANO Store"} />

@@ -37,22 +37,19 @@ const ProductChart = () => {
 
       if (data && data.orders) {
         const filteredOrders = data.orders.filter(
-          (order) =>
-            // order.orderStatus === "Đã xác nhận" ||
-            // order.orderStatus === "Đang giao hàng" ||
-            order.orderStatus === "Đã giao hàng"
+          (order) => order.orderStatus === "Đã giao hàng"
         );
 
         setOrders(filteredOrders);
         console.log("Orders:", filteredOrders);
       } else {
-        console.error("Error fetching orders: Unexpected API response format");
-        toast.error("Error fetching orders");
+        console.error("Có lỗi xảy ra");
+        toast.error("Có lỗi xảy ra");
       }
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching orders:", error);
-      toast.error("Error fetching orders");
+      console.error("Có lỗi xảy ra khi lấy đơn hàng", error);
+      toast.error("Có lỗi xảy ra khi lấy đơn hàng");
     }
   };
 
@@ -121,15 +118,11 @@ const ProductChart = () => {
     ],
   };
   return (
-    <div className="w-full">
-      <div className="mb-4">
-        <Line
-          className="w-full md:w-1/2 h-60 md:h-80"
-          options={options}
-          data={data}
-        />
-      </div>
-    </div>
+    <Line
+      className="w-full my-5 md:w-1/2 h-60 md:h-80"
+      options={options}
+      data={data}
+    />
   );
 };
 

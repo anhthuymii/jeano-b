@@ -69,7 +69,6 @@ const OrderDone = () => {
     }
   };
   useEffect(() => {
-    // Fetch all products when the component mounts
     fetchOrders();
   }, [userId, limit, page]);
 

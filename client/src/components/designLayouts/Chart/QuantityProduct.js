@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-const QuantityProduct = () => {
+const QuantityProduct = ({ onSelectFilter }) => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -43,7 +43,10 @@ const QuantityProduct = () => {
 
   return (
     <div className="flex flex-col md:flex-row gap-2 justify-center items-center text-center">
-      <div className="flex-1 md:w-1/3 bg-primeColor hover:bg-black text-white group rounded-md p-5 ring-1 ring-slate-200 shadow-sm">
+      <div
+        onClick={() => onSelectFilter(null)}
+        className="flex-1 md:w-1/3 bg-primeColor hover:bg-black text-white group rounded-md p-5 ring-1 ring-slate-200 shadow-sm"
+      >
         <div className="grid sm:block lg:grid xl:block items-center">
           <p className="group-hover:text-white font-bold text-lg text-white">
             Tổng số sản phẩm
@@ -53,7 +56,10 @@ const QuantityProduct = () => {
       </div>
 
       <div className="flex-1 md:w-1/3 mx-3 bg-primeColor hover:bg-black text-white group rounded-md p-5 ring-1 ring-slate-200 shadow-sm">
-        <div className="grid sm:block lg:grid xl:block items-center">
+        <div
+          onClick={() => onSelectFilter("active")} // Clicking on active products
+          className="grid sm:block lg:grid xl:block items-center"
+        >
           <p className="group-hover:text-white font-bold text-lg text-white">
             Sản phẩm đang bán
           </p>
@@ -64,7 +70,10 @@ const QuantityProduct = () => {
       </div>
 
       <div className="flex-1 md:w-1/3 bg-primeColor hover:bg-black text-white group rounded-md p-5 ring-1 ring-slate-200 shadow-sm">
-        <div className="grid sm:block lg:grid xl:block items-center">
+        <div
+          onClick={() => onSelectFilter("outOfStock")} // Clicking on out of stock products
+          className="grid sm:block lg:grid xl:block items-center"
+        >
           <p className="group-hover:text-white font-bold text-lg text-white">
             Sản phẩm hết hàng
           </p>

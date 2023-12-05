@@ -113,13 +113,13 @@ const ListOrder = ({ onChangeOrderStatus }) => {
       >
         Đã hủy đơn ({cancel.length})
       </NavLink>
-      |
+      {/*|
       <button
         className="p-2 m-2"
         // onClick={() => handleDelivery()}
       >
-        Đã trả hàng
-      </button>
+  Đã trả hàng
+      </button>*/}
     </div>
   );
 };

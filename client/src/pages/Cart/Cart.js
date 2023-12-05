@@ -47,6 +47,14 @@ const Cart = () => {
   const order = useSelector((state) => state.order);
   console.log("order", order);
 
+  const handleCheckout = () => {
+    if (auth.user) {
+      navigate("/checkout");
+    } else {
+      navigate("/signin", { state: { redirectTo: "/checkout" } });
+    }
+  };
+
   return (
     <div className="max-w-container mx-auto px-4">
       <Title title={"Giỏ hàng của bạn - JEANO Store"} />
@@ -98,21 +106,12 @@ const Cart = () => {
                 </p>
               </div>
               <div className="flex justify-end">
-                {!auth.user ? (
-                  <Link to="/signin">
-                    <button className="w-full mx-2 uppercase h-10 bg-primeColor text-white hover-bg-black duration-300">
-                      Đăng Nhập để Thanh Toán
-                    </button>
-                  </Link>
-                ) : (
-                  <div>
-                    <Link to="/checkout">
-                      <button className="w-full px-2 uppercase h-10 bg-primeColor text-white hover-bg-black duration-300">
-                        Thanh Toán
-                      </button>
-                    </Link>
-                  </div>
-                )}
+                <button
+                  onClick={handleCheckout}
+                  className="w-full px-2 uppercase h-10 bg-primeColor text-white hover-bg-black duration-300"
+                >
+                  Thanh Toán
+                </button>
               </div>
             </div>
           </div>
@@ -135,9 +134,6 @@ const Cart = () => {
             <h1 className="font-titleFont text-xl font-bold uppercase">
               Giỏ hàng đang rỗng
             </h1>
-            {/*<p className="text-sm text-center px-10 -mt-2">
-              Thay đổi phong cách 
-      </p>*/}
             <Link to="/shop">
               <button className="bg-primeColor rounded-md cursor-pointer hover-bg-black active-bg-gray-900 px-8 py-2 font-titleFont font-semibold text-lg text-gray-200 hover-text-white duration-300">
                 Tiếp tục mua sắm

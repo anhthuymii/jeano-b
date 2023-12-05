@@ -9,10 +9,10 @@ import ChangePassword from "./ChangePassword";
 import Title from "../../components/designLayouts/Title";
 const UserDashboard = () => {
   const [auth] = useAuth();
+  const [user, setUser] = useState("");
   const [id, setId] = useState("");
   const navigate = useNavigate();
   const [addressDetails, setAddressDetails] = useState({});
-  const [user, setUser] = useState("");
   const [update, setUpdate] = useState(null);
   const [showUpdate, setShowUpdate] = useState(false);
   const handleUpdate = (user) => {

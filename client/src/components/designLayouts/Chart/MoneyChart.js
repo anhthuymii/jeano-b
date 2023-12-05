@@ -137,7 +137,7 @@ const MoneyChart = () => {
       <div>
         <select
           id="dateSelector"
-          className=" bg-black text-white p-3"
+          className=" bg-gray-100 border-black rounded-sm p-3"
           onChange={handleDateChange}
           value={selectedDate}
         >
@@ -276,7 +276,7 @@ const MoneyChart = () => {
         </label>
         <select
           id="statisticSelector"
-          className=" bg-black text-white p-3"
+          className=" bg-gray-100 border-black rounded-sm p-3"
           onChange={(e) => setSelectedStatistic(e.target.value)}
           value={selectedStatistic}
         >

@@ -18,7 +18,7 @@ const UpdateOrder = () => {
   const [prevLocation, setPrevLocation] = useState("");
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
-  const [update, setUpdate] = useState(null); // Use null instead of an empty string
+  const [update, setUpdate] = useState(null);
   const [showUpdate, setShowUpdate] = useState(false);
   const { id } = useParams();
   const componentRef = useRef();
@@ -97,11 +97,11 @@ const UpdateOrder = () => {
                       </p>
                       <p className="text-base leading-4 text-left text-gray-800">
                         Ngày đặt hàng:{" "}
-                        {dayjs(orders.createdAt).format("DD-MM-YYYY HH:mm:ss")}
+                        {dayjs(orders.createdAt).format("DD/MM/YYYY HH:mm")}
                       </p>
                       <p className="text-base leading-4 text-left text-gray-800">
                         Ngày cập nhật:{" "}
-                        {dayjs(orders.updatedAt).format("DD-MM-YYYY HH:mm:ss")}
+                        {dayjs(orders.updatedAt).format("DD/MM/YYYY HH:mm")}
                       </p>
                       <p className="text-base leading-4 text-left text-gray-800">
                         Thanh toán: {orders.paymentIntent}
@@ -191,7 +191,7 @@ const UpdateOrder = () => {
                     </div>
                     <div className="flex justify-between items-center w-full">
                       <p className="text-base leading-4 text-gray-800">
-                        Phí ship:
+                        Phí vận chuyển:
                       </p>
                       <p className="text-base leading-4 text-gray-600">
                         {numeral(orders.shippingPrice).format("0,0")} VND

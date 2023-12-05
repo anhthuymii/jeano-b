@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
-    notification:{
+    notifications:{
       type: Array,
       default: []
     },

@@ -85,11 +85,9 @@ const SignIn = () => {
         dispatch(setUser(res.data.user));
         dispatch(setToken(res.data.token));
         localStorage.setItem("auth", JSON.stringify(res.data));
-        if (location.state) {
-          navigate(location.state);
-        } else {
-          navigate("/");
-        }
+
+        const redirectTo = location.state?.redirectTo || "/";
+        navigate(redirectTo);
       } else {
         toast.error(res.data.message);
       }

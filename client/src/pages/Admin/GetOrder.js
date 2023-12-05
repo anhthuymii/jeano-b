@@ -14,7 +14,7 @@ import Title from "../../components/designLayouts/Title";
 import ReactPaginate from "react-paginate";
 import OrderSteps from "../User/orderStatus/OrderSteps";
 import ListOrder from "./orderStatus/ListOrder";
-const ROWS_PER_PAGE = 12;
+const ROWS_PER_PAGE = 10;
 
 const GetOrder = ({ onTotalOrders }) => {
   const [orders, setOrders] = useState([]);
@@ -25,7 +25,7 @@ const GetOrder = ({ onTotalOrders }) => {
   const navigate = useNavigate("");
   const [status, setStatus] = useState([]);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(12);
+  const [limit, setLimit] = useState(10);
 
   const [pagination, setPagination] = useState({
     first: 0,

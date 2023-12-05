@@ -44,8 +44,10 @@ const InfoAdmin = () => {
   };
 
   useEffect(() => {
-    getUser();
-  }, [auth.user.id]);
+    if (auth.user?.id) {
+      getUser();
+    }
+  }, [auth.user?.id]);
 
   return (
     <div className="w-full min-h-screen flex flex-row">

@@ -13,6 +13,7 @@ import { AiFillCaretRight, AiFillCaretLeft } from "react-icons/ai";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { MdOutlineReviews } from "react-icons/md";
 const SidebarContext = createContext();
 
 export default function Sidebar({ children }) {
@@ -43,6 +44,11 @@ export default function Sidebar({ children }) {
       name: "Quản lý người dùng",
       icon: <BiSolidUserAccount />,
       path: "/dashboard/admin/users",
+    },
+    {
+      name: "Đánh giá sản phẩm",
+      icon: <MdOutlineReviews />,
+      path: "/dashboard/admin/reviews",
     },
     {
       name: "Thông tin cá nhân",
@@ -81,7 +87,7 @@ export default function Sidebar({ children }) {
       animate={isExpanded ? "expanded" : "nonExpanded"}
       variants={variants}
       className={
-        "px-4 py-5 mb-5 flex flex-col border border-r-1 w-full h-screen relative" +
+        "px-4 py-5 mb-2 flex flex-col border border-r-1 w-full h-full relative" +
         (isExpanded ? "px-10" : "px-4")
       }
     >
